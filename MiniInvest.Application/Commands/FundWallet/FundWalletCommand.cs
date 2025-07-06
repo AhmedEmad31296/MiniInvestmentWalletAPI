@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace MiniInvest.Application.Commands.FundWallet
 {
-    public record FundWalletCommand(Guid InvestorId, decimal Amount) : IRequest<Unit>;
+    public record FundWalletCommand(Guid InvestorId, decimal Amount) : IRequest;
 }

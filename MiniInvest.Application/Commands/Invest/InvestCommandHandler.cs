@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MiniInvest.Application.Commands.Invest
 {
-    public class InvestCommandHandler : IRequestHandler<InvestCommand, Unit>
+    public class InvestCommandHandler : IRequestHandler<InvestCommand>
     {
         private readonly IInvestorRepository _repository;
 
@@ -20,7 +20,7 @@ namespace MiniInvest.Application.Commands.Invest
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(InvestCommand request, CancellationToken cancellationToken)
+        public async Task Handle(InvestCommand request, CancellationToken cancellationToken)
         {
             var investor = await _repository.GetByIdAsync(request.InvestorId);
             if (investor == null) throw new Exception("Investor not found");
@@ -36,7 +36,6 @@ namespace MiniInvest.Application.Commands.Invest
             investor.Investments.Add(investment);
 
             await _repository.UpdateAsync(investor);
-            return Unit.Value;
         }
     }
 }

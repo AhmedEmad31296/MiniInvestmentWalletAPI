@@ -32,15 +32,29 @@ namespace MiniInvest.API.Controllers
         [HttpPost("fund-wallet")]
         public async Task<IActionResult> FundWallet([FromBody] FundWalletCommand command)
         {
-            await _mediator.Send(command);
-            return NoContent();
+            try
+            {
+                await _mediator.Send(command);
+                return Ok(new { Message = "Wallet funded successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
 
         [HttpPost("invest")]
         public async Task<IActionResult> Invest([FromBody] InvestCommand command)
         {
-            await _mediator.Send(command);
-            return NoContent();
+            try
+            {
+                await _mediator.Send(command);
+                return Ok(new { Message = "Investment completed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
 
         [HttpGet("{investorId}")]

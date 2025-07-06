@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MiniInvest.Application.Commands.FundWallet
 {
-    public class FundWalletCommandHandler : IRequestHandler<FundWalletCommand,Unit>
+    public class FundWalletCommandHandler : IRequestHandler<FundWalletCommand>
     {
         private readonly IInvestorRepository _repository;
 
@@ -19,7 +19,7 @@ namespace MiniInvest.Application.Commands.FundWallet
             _repository = repository;
         }
 
-        public async Task<Unit> Handle(FundWalletCommand request, CancellationToken cancellationToken)
+        public async Task Handle(FundWalletCommand request, CancellationToken cancellationToken)
         {
             var investor = await _repository.GetByIdAsync(request.InvestorId);
             if (investor == null) throw new Exception("Investor not found");
@@ -27,7 +27,6 @@ namespace MiniInvest.Application.Commands.FundWallet
             investor.FundWallet(request.Amount);
             await _repository.UpdateAsync(investor);
 
-            return Unit.Value;
         }
     }
 }

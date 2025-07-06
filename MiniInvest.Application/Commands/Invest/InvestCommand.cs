@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace MiniInvest.Application.Commands.Invest
 {
-    public record InvestCommand(Guid InvestorId, Guid OpportunityId, decimal Amount) : IRequest<Unit>;
+    public record InvestCommand(Guid InvestorId, Guid OpportunityId, decimal Amount) : IRequest;
 }
