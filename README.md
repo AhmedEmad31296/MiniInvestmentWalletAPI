@@ -1,107 +1,196 @@
-# MiniInvestmentWalletApi
-Focus: C# (.NET Core), Clean Architecture, Domain-Driven Design, CQRS, REST API
 # 💼 Mini Investment Wallet API
 
-A backend-only API built using **ASP.NET Core (.NET 8)** following Clean Architecture and Domain-Driven Design (DDD) principles. It simulates a fintech wallet platform for investor account creation, wallet funding, and investing in static opportunities.
+A backend-only API built using **ASP.NET Core (.NET 8)** that follows Clean Architecture and Domain-Driven Design (DDD).
+It simulates a simplified fintech platform for:
 
-> ⚠️ **.NET 7 is no longer supported**, so this project targets **.NET 8** to ensure long-term stability and support.
-> See [.NET Support Policy](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core) for details.
+* 🧑 Investor account creation
+* 💳 Wallet funding
+* 💼 Investing in static opportunities
+* 📈 Tracking wallet balance and investment history
+
+> ⚠️ **.NET 7 is no longer supported**, so this project targets **.NET 8** for long-term stability.
+> See [.NET Support Policy](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core) for official info.
 
 ---
 
 ## 🔧 Tech Stack
 
-- ASP.NET Core 8
-- Entity Framework Core with PostgreSQL
-- Clean Architecture
-- MediatR (CQRS pattern)
-- Domain-Driven Design (DDD)
-- Dependency Injection
-- Swagger for API documentation
+* **.NET 8 (ASP.NET Core Web API)**
+* **Entity Framework Core** with **PostgreSQL**
+* **Clean Architecture**
+* **CQRS** with [MediatR](https://github.com/jbogard/MediatR)
+* **Domain-Driven Design (DDD)**
+* **Dependency Injection**
+* **Swagger/OpenAPI** for testing
 
 ---
 
-## 📂 Project Structure
+## 📁 Project Structure
 
+```
 MiniInvest/
+🔺 MiniInvest.API           # API layer (Controllers, Swagger, DI)
+🔺 MiniInvest.Application   # CQRS Commands, Queries, Handlers, Interfaces
+🔺 MiniInvest.Domain        # Domain entities (Investor, Investment, Opportunity)
+🔺 MiniInvest.Infrastructure# EF Core DbContext, Repositories, Configs
+🔺 MiniInvestmentWalletApi.sln
+```
 
-├── MiniInvest.API # API layer (Controllers, Swagger, DI) 
+---
 
-├── MiniInvest.Application # CQRS Commands, Queries, Handlers, Interfaces
+## 📌 Static Investment Opportunities
 
-├── MiniInvest.Domain # Core business entities (Investor, Investment, etc.)
+These are hardcoded in the domain layer:
 
-├── MiniInvest.Infrastructure # EF Core DbContext, PostgreSQL, Repository implementation
+| ID                                     | Name             | Minimum Amount |
+| -------------------------------------- | ---------------- | -------------- |
+| `11111111-1111-1111-1111-111111111111` | Real Estate Fund | 1000           |
+| `22222222-2222-2222-2222-222222222222` | Tech Growth Fund | 1500           |
+| `33333333-3333-3333-3333-333333333333` | SME Sukuk        | 800            |
 
-└── MiniInvestmentWalletApi.sln # Solution file
+---
 
+## 🚀 Getting Started
 
-Recommended credentials:
-Username: postgres, Password: 123qwe
+### ✅ Requirements
 
+* [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download)
+* [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 
+### 🛠 Recommended PostgreSQL Credentials
 
+```text
+Username: postgres
+Password: 123qwe
+Port: 5432
+Database: MiniInvestDb
+```
 
-Run Migrations: 
+---
+
+## ⚙️ Run the Project
+
+### 1️⃣ Apply Database Migrations
+
+```bash
 dotnet ef database update --startup-project ./MiniInvest.API
+```
 
+### 2️⃣ Start the API
 
-Run the API: 
+```bash
 dotnet run --project ./MiniInvest.API
+```
 
+Swagger UI will be available at:
+👉 `https://localhost:{port}/swagger`
 
-Example API Requests
-1. Create Investor
+---
+
+## 📬 API Endpoints & Examples
+
+### 1. 🧑 Create Investor
+
+```http
 POST /api/investors
+Content-Type: application/json
+```
 
+**Request:**
+
+```json
 {
   "name": "Ahmed Emad",
   "email": "ahmed@test.com"
 }
-🟢 Response: 200 OK with investorId (GUID)
+```
 
+**Response:**
 
+```json
+{
+  "investorId": "GUID"
+}
+```
 
-2. Fund Wallet
+---
+
+### 2. 💳 Fund Wallet
+
+```http
 POST /api/investors/{investorId}/fund
+```
 
+**Request:**
+
+```json
 {
   "amount": 5000
 }
-🟢 Response: 200 OK
+```
 
+**Response:** `200 OK`
 
+```json
+{ "message": "Wallet funded successfully." }
+```
 
- 3. Make Investment
+---
+
+### 3. 💼 Make Investment
+
+```http
 POST /api/investors/{investorId}/invest
+```
 
+**Request:**
+
+```json
 {
   "opportunityId": "11111111-1111-1111-1111-111111111111",
   "amount": 2000
 }
-🟢 Response: 200 OK
+```
 
+**Response:** `200 OK`
 
+```json
+{ "message": "Investment completed successfully." }
+```
 
-4. Get Wallet Balance
+---
+
+### 4. 💰 Get Wallet Balance
+
+```http
 GET /api/investors/{investorId}/balance
+```
 
-🟢 Response:
-1500.0
+**Response:**
 
+```json
+{
+  "balance": 1500.0
+}
+```
 
+---
 
+### 5. 📈 Get Investment History
 
-5. Get Investment History
+```http
 GET /api/investors/{investorId}/history
+```
 
-🟢 Response:
+**Response:**
+
+```json
 [
   {
     "id": "investment-id-guid",
     "investorId": "investor-guid",
     "opportunity": {
-      "id": "1111...",
+      "id": "11111111-1111-1111-1111-111111111111",
       "name": "Real Estate Fund",
       "minimumAmount": 1000
     },
@@ -109,3 +198,15 @@ GET /api/investors/{investorId}/history
     "date": "2025-07-05T21:00:00Z"
   }
 ]
+```
+
+---
+
+## 🔪 API Testing
+
+Use:
+
+* [Swagger UI](https://localhost:{port}/swagger)
+* Or tools like Postman
+
+---
